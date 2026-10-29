@@ -1,0 +1,1 @@
+not_damaged_42: SAM failed (white eggs in white tray, no usable mask); excluded from GT
