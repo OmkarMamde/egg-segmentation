@@ -1,0 +1,8 @@
+metric,eval,dev (reference)
+mIoU,0.633284928156874,0.6492626831852096
+median IoU,0.7407457322551663,0.7379260909996053
+mDice,0.7301660064115016,
+mean precision,0.7151658875637784,
+mean recall,0.8646911441804774,
+images IoU<0.5,9.0,29.0
+count match (n_pred == n_gt),16.0,
