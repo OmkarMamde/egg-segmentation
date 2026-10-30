@@ -1,0 +1,11 @@
+trial,what_changed,why,params,dev_mIoU,dev_median_IoU,dev_mDice,n_fail_iou_below_0_5
+T1,baseline: grayscale Otsu,"simplest possible method, sets the floor",{},0.3326,0.2528,0.456,64
+T2,"HSV: low saturation + high value, morphology, drop small blobs","eggs are white (low S, high V), unlike most backgrounds","{'s_max': 60, 'v_min': 140, 'k': 7}",0.3875,0.282,0.5062,57
+T3,"T2 + keep only convex, elliptical components, fill holes",failures showed spurious blobs; test how much a shape prior alone gives,"{'s_max': 60, 'v_min': 140, 'k': 7, 'sol': 0.9}",0.2604,0.0,0.302,61
+T4,replace colour rule with Lab distance from border-estimated background,"eggs are not always brighter than the background (backlit, white-on-white)","{'border': 0.08, 'k': 7, 'sol': 0.9}",0.3163,0.0987,0.3747,57
+T5,"GrabCut from a central rectangle, keep components >=25% of the largest, fill holes",T3/T4 showed global colour rules fail; GrabCut uses local colour models and edges,"{'margin': 0.08, 'iters': 5, 'work': 320, 'rel': 0.25}",0.5559,0.4858,0.6583,44
+T6,T5 with margin 0.08 -> 0.2 (tighter initial rectangle),"rectangle covered almost the whole image, so fg model was dominated by background / hand",{},0.5506,0.5935,0.6411,32
+T7,"run GrabCut at 4 rectangle sizes, keep the most egg-shaped result",no single margin fits all images; choose per image by convexity x ellipse fit (no GT used),"{'margins': (0.05, 0.15, 0.25, 0.33)}",0.6143,0.6794,0.703,34
+T8,"T7 + remove skin-coloured pixels (YCrCb) from each GrabCut result, then clean","T5-T7 failures leak into hands; skin is a known, classical colour cluster","{'margins': (0.05, 0.15, 0.25, 0.33)}",0.6255,0.6533,0.7134,31
+T9,T8 with shape score = IoU between mask and its fitted ellipse,old score accepted near-rectangular masks (visible in T7/T8 failures),"{'margins': (0.05, 0.15, 0.25, 0.33)}",0.6267,0.7091,0.7142,32
+T10,"T9 + GrabCut candidates initialised from an ellipse mask (sure core, probable ring)",rectangle init marks the whole box probable-foreground and leaks into white cloth/bag,"{'margins': (0.05, 0.15, 0.25, 0.33), 'scales': (0.45, 0.65, 0.85)}",0.6493,0.7379,0.7347,29

@@ -2,3 +2,4 @@ venv/
 data/
 *.pth
 *.pkl
+outputs/*.mp4
